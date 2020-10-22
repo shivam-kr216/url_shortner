@@ -1,8 +1,13 @@
 <?php  
+	// check that id is set or not by get method (means in the url)
 	if(isset($_GET['id'])){
+		// include the functions.php
 		include $_SERVER['DOCUMENT_ROOT'] . '/php/BackEnd/includes/functions.php';
+		// store the id which getting by url
 		$id  = $_GET['id'];
+		// get the url by id
 		$url = getUrlLocation($id);
+		// move to url
 		header('Location: ' . $url);
 	}
 ?>
@@ -28,25 +33,37 @@
 	</div>
 
 	<script type="text/javascript">
+		// run the code when document was loaded
 		$(document).ready(function(){
+			// when click on the submit button, run this
 			$('input[type="submit"]').click(function(e){
+				// disable the default behaviour of form
 				e.preventDefault();
-
+				// add nothing to class "errors"
 				$('.errors').html('');
+				//get the value from input
 				var url = $('input[name="url"]').val();
 
+				//check the length of url (means input is empty or not)
 				if(url.length == 0){
+					// add error message to "errors" class div
 					$('.errors').html('Whoops! Please enter a URL!');
 					return false;
 				}
-
-				$.post('/php/BackEnd/includes/process.php', {
-					url: url
-				}, function(data, textStatus, xhr) {
-					var od = data;
-					data = 'http://localhost/php/BackEnd/index.php?id='+data;
-					$('.errors').html('<a href="' + data + '" target="_blank">sho.rt/' + od + '</a>')
-				});
+				
+				// made post request to given url
+				$.post(
+					'/php/BackEnd/includes/process.php',  //url
+					{
+						url: url      // data send with url
+					},
+					// function run when request is success
+					function(data, textStatus, xhr) {
+						var od = data;
+						data = 'http://localhost/php/BackEnd/index.php?id='+data;
+						$('.errors').html('<a href="' + data + '" target="_blank">sho.rt/' + od + '</a>')
+					}
+				);
 			});
 		});
 	</script>
